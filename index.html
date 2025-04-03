@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Details</title>
+    <style>
+
+        
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #01161a, #0329fd);
+            color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .co {
+            text-align: center;
+            background: linear-gradient( to bottom, rgb(0, 255, 119) , rgb(60, 0, 255) );
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(248, 0, 239, 0.5);
+            width: 90%;
+            max-width: 405px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #000000;
+        }
+
+        .search {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #cityInput {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #00d4ff;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        #searchBtn {
+            padding: 10px 20px;
+            background-color: #00d4ff;
+            border: none;
+            color: black;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #searchBtn:hover {
+            background-color: #f77c01;
+            transform: scale(1.05);
+        }
+
+        .weather-info {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #cityName {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #temperature {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        #description {
+            font-style: italic;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    
+
+    <div class="co">
+        <h1>Weather Details</h1>
+        <div class="search">
+            <input type="text" id="cityInput" placeholder="Enter city name">
+            <button id="searchBtn">Search</button>
+        </div>
+        <div class="weather-info" id="weatherInfo">
+            <h2 id="cityName"></h2>
+            <p id="temperature"></p>
+            <p id="description"></p>
+        </div>
+    </div>
+
+    <script>
+        const searchBtn = document.getElementById('searchBtn');
+        const cityInput = document.getElementById('cityInput');
+        const weatherInfo = document.getElementById('weatherInfo');
+        const cityName = document.getElementById('cityName');
+        const temperature = document.getElementById('temperature');
+        const description = document.getElementById('description');
+
+        searchBtn.addEventListener('click', async () => {
+            const city = cityInput.value;
+            if (!city) {
+                alert(' enter a city name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=1a47c6d0d4e24642819112007252201&q=${city}&aqi=yes`);
+                if (!response.ok) {
+                    throw new Error('City not found');
+                }
+
+                const data = await response.json();
+                cityName.textContent = `Weather in ${data.location.name}, ${data.location.country}`;
+                temperature.textContent = `Temperature: ${data.current.temp_c}°C`;
+                description.textContent = `Condition: ${data.current.condition.text}`;
+                weatherInfo.style.display = 'block';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>
